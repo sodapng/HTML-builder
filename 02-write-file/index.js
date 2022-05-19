@@ -25,7 +25,7 @@ rl.on('close', () => {
     console.log(`All your sentences have been written to ${filePath}`);
   });
 
-  setTimeout(() => {
-    exit(0);
-  }, 100);
+  setImmediate(() => {
+    exit(1);
+  });
 });

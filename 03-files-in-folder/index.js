@@ -1,7 +1,7 @@
 const { readdir, stat } = require('fs');
 const { resolve, extname, basename } = require('path');
 
-const basePath = resolve(__dirname);
+const basePath = resolve(__dirname, 'secret-folder');
 
 const readDir = (path) => {
   readdir(path, { withFileTypes: true }, (err, files) => {

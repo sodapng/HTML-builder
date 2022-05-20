@@ -6,26 +6,23 @@ const { resolve } = require('path');
 const filePath = resolve(__dirname, 'text.txt');
 const writableStream = createWriteStream(filePath, { flags: 'a' });
 const rl = createInterface({ input, output });
-console.log('Hello, stranger!');
+output.write('Hello, stranger!\n');
 
 rl.on('line', (line) => {
-  if (line.match(/^exit$/i)) {
-    rl.close();
-    return;
+  if (/^exit$/.test(line)) {
+    return rl.close();
   }
 
   writableStream.write(`${line}\n`);
-});
+})
+  .on('SIGINT', () => rl.close())
+  .on('close', () => {
+    writableStream.end();
+    writableStream.on('finish', () => {
+      output.write(`All your sentences have been written to ${filePath}`);
+    });
 
-rl.on('SIGINT', () => rl.close());
-
-rl.on('close', () => {
-  writableStream.end();
-  writableStream.on('finish', () => {
-    console.log(`All your sentences have been written to ${filePath}`);
+    setImmediate(() => {
+      exit(0);
+    });
   });
-
-  setImmediate(() => {
-    exit(1);
-  });
-});

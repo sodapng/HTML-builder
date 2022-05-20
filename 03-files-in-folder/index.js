@@ -7,7 +7,8 @@ const readDir = (path) => {
   readdir(path, { withFileTypes: true }, (err, files) => {
     for (const file of files) {
       const filePath = resolve(path, file.name);
-      if (file.name === 'secret-folder') {
+
+      if (/^secret-folder$/.test(file.name)) {
         readDir(filePath);
       }
 
@@ -17,7 +18,7 @@ const readDir = (path) => {
         const ext = extname(file.name);
         const name = basename(filePath, ext);
         const size = stats.size / 1024;
-        console.log(`${name} - ${ext.replace('.', '')} - ${size.toFixed(2)}kb`);
+        console.log(`${name} - ${ext} - ${size.toFixed(2)}kb`);
       });
     }
   });

@@ -1,6 +1,17 @@
 const { createReadStream, createWriteStream } = require('fs');
 const { readdir, rm, mkdir, copyFile, readFile } = require('fs/promises');
 const { resolve, extname, basename } = require('path');
+const { Transform } = require('stream');
+
+class newLine extends Transform {
+  constructor() {
+    super();
+  }
+
+  _transform(chunk, encoding, callback) {
+    callback(null, `\n${chunk}\n`);
+  }
+}
 
 class BuildPage {
   constructor(entry, components, styles, assets) {
@@ -53,7 +64,7 @@ class BuildPage {
         resolve(this.dist, 'style.css'),
         { flags: 'a' }
       );
-      readableStream.pipe(writableStream);
+      readableStream.pipe(new newLine()).pipe(writableStream);
     }
   }
 
